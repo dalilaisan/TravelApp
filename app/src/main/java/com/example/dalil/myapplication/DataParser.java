@@ -43,7 +43,6 @@ public class DataParser {
             googlePlaceMap.put("lng", longitude);
             googlePlaceMap.put("reference", reference);
 
-
         }
         catch (JSONException e) {
             e.printStackTrace();

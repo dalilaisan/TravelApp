@@ -1,7 +1,6 @@
 package com.example.dalil.myapplication;
 
 import android.Manifest;
-import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.location.Address;
@@ -25,17 +24,15 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
-import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.places.AutocompletePrediction;
 import com.google.android.gms.location.places.GeoDataClient;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.PlaceBufferResponse;
 import com.google.android.gms.location.places.Places;
-import com.google.android.gms.location.places.ui.PlacePicker;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -53,7 +50,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
+public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener {
 
     //constants
     private static final String TAG = "MapActivity";
@@ -62,10 +59,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1234;
     private static final float DEFAULT_ZOOM = 15f;
     private static final LatLngBounds LAT_LNG_BOUNDS = new LatLngBounds(new LatLng(-40, -168), new LatLng(71, 136));
-    private static final int PLACE_PICKER_REQUEST = 1;
     //widgets
     private AutoCompleteTextView mSearchText;
-    private ImageView mGps, mInfo, mPlacePicker;
+    private ImageView mGps, mInfo;
     //vars
     private Boolean mLocationPermissionsGranted = false;
     private GoogleMap mMap;
@@ -75,7 +71,10 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private GeoDataClient mGeoDataClient;
     private PlaceInfo mPlace;
     private Marker mMarker;
-    private int PROXIMITY_RADIUS = 10000;
+    ////////////////////////////////////
+    private double latitude,longitude;
+//    private Location lastlocation;
+//    private Marker currentLocationmMarker;
 
 
     @Override
@@ -119,7 +118,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         mSearchText = findViewById(R.id.input_search);
         mGps = findViewById(R.id.ic_gps);
         mInfo = findViewById(R.id.place_info);
-        mPlacePicker = findViewById(R.id.place_picker);
         getLocationPermission();
     }
 
@@ -180,43 +178,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             }
         });
         hideSoftKeyboard();
-
-        mPlacePicker.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Log.e(TAG, "onClick: clicked on place picker icon");
-                PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
-                
-                try {
-                    startActivityForResult(builder.build(MapsActivity.this), PLACE_PICKER_REQUEST);
-                } catch (GooglePlayServicesRepairableException e) {
-                    Log.e(TAG, "onClick: GooglePlayServicesRepairableException: " + e.getMessage() );
-                } catch (GooglePlayServicesNotAvailableException e) {
-                    Log.e(TAG, "onClick: GooglePlayServicesNotAvailableException: " + e.getMessage() );
-                }
-            }
-        });
-    }
-
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == PLACE_PICKER_REQUEST) {
-            if (resultCode == RESULT_OK) {
-                Place place = PlacePicker.getPlace(this, data);
-                String toastMsg = String.format("Place: %s", place.getName());
-                Toast.makeText(this, toastMsg, Toast.LENGTH_LONG).show();
-
-//                PENDING RESULT ETC ETC ETC
-//                PendingResult<PlaceBuffer> placeResult = Places.GeoDataApi
-//                        .getPlaceById(mGoogleApiClient, place.getId());
-//                placeResult.setResultCallback(mUpdatePlaceDetailsCallback);
-//
-//                Alternatively:
-//                on complete listener place buffer response
-//                OnCompleteListener<PlaceBufferResponse> response = new OnCompleteListener<PlaceBufferResponse>()
-//                now we configure the response to get a list of nearby places
-                
-            }
-        }
     }
 
     private void geoLocate() {
@@ -311,6 +272,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             mMap.addMarker(options);
         }
         hideSoftKeyboard();
+        showNearby();
     }
 
     private void initMap() {
@@ -441,37 +403,82 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     };
 
 
-    //-------this part is meant only for displaying markers for nearby places found form the GetNearbyPlaceData class-------
 
 
-    public void showNearbyPlaces(){
+
+    //-------THIS PART IS MEANT ONLY FOR DISPLAYING MARKERS FOR NEARBY PLACES FOUND IN THE GetNearbyPlaceData CLASS-------
+
+    public void showNearby()
+    {
+        Log.d(TAG, "showNearby: GETTING NEARBY PLACES NOW !!!!!!!!!!!!");
 
         Object dataTransfer[] = new Object[2];
         GetNearbyPlacesData getNearbyPlacesData = new GetNearbyPlacesData();
 
-        for(int i=0; i<dataTransfer.length; i++) {
-           // interests[i]
-             //       showOnMap
+        ArrayList<String> interests = new ArrayList<>();
+        interests.add("restaurant");
+        //interests.add("school");
+        //interests.add("restaurant");
+
+        for(int i=0; i<interests.size(); i++) {
+            mMap.clear();
+            String placeType = interests.get(i);
+            String url = getUrl(latitude, longitude, placeType);
+
+            dataTransfer[0] = mMap;
+            dataTransfer[1] = url;
+
+            getNearbyPlacesData.execute(dataTransfer);
+            Toast.makeText(MapsActivity.this, "Showing Nearby Places", Toast.LENGTH_SHORT).show();
         }
-
     }
-
 
     private String getUrl(double latitude , double longitude , String nearbyPlace)
     {
+        int PROXIMITY_RADIUS = 10000;
 
         StringBuilder googlePlaceUrl = new StringBuilder("https://maps.googleapis.com/maps/api/place/nearbysearch/json?");
-        googlePlaceUrl.append("location=" + latitude + "," + longitude);
-        googlePlaceUrl.append("&radius=" + PROXIMITY_RADIUS);
-        googlePlaceUrl.append("&type=" + nearbyPlace);
-        googlePlaceUrl.append("&key=" + "@string/google_maps_API_key");
+        googlePlaceUrl.append("location=").append(latitude).append(",").append(longitude);
+        googlePlaceUrl.append("&radius=").append(PROXIMITY_RADIUS);
+        googlePlaceUrl.append("&type=").append(nearbyPlace);
+        googlePlaceUrl.append("&key=" + "AIzaSyDiC_O2q9rY51r-EXnmX5Gc97KCQwoGMNs");
 
-        Log.d("MapsActivity", "url = "+googlePlaceUrl.toString());
+        Log.d("MapsActivity", "url = " + googlePlaceUrl.toString());
 
         return googlePlaceUrl.toString();
     }
 
+    @Override
+    public void onLocationChanged(Location location) {
 
+    }
+
+//    @Override
+//    public void onLocationChanged(Location location) {
+//
+//        latitude = location.getLatitude();
+//        longitude = location.getLongitude();
+//        lastlocation = location;
+//        if(currentLocationmMarker != null)
+//        {
+//            currentLocationmMarker.remove();
+//
+//        }
+//        Log.d("lat = ",""+latitude);
+//        LatLng latLng = new LatLng(location.getLatitude() , location.getLongitude());
+//        MarkerOptions markerOptions = new MarkerOptions();
+//        markerOptions.position(latLng);
+//        markerOptions.title("Current Location");
+//        markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE));
+//        currentLocationmMarker = mMap.addMarker(markerOptions);
+//        mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
+//        mMap.animateCamera(CameraUpdateFactory.zoomBy(10));
+//
+//        if(client != null)
+//        {
+//            LocationServices.FusedLocationApi.removeLocationUpdates(client,this);
+//        }
+//    }
 
 
 }

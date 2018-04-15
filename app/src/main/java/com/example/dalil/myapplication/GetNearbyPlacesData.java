@@ -15,6 +15,7 @@ import java.util.List;
 
 class GetNearbyPlacesData extends AsyncTask<Object, String, String> {
 
+    private static final String TAG = "GetNearbyPlacesData";
     private String googlePlacesData;
     private GoogleMap mMap;
     String url;
@@ -44,8 +45,10 @@ class GetNearbyPlacesData extends AsyncTask<Object, String, String> {
         showNearbyPlaces(nearbyPlaceList);
     }
 
-    private void showNearbyPlaces(List<HashMap<String, String>> nearbyPlaceList)
-    {
+    private void showNearbyPlaces(List<HashMap<String, String>> nearbyPlaceList) {
+
+        Log.d(TAG, "showNearbyPlaces: THIS IS CALLED NOW!!!!!!!!!!!!!");
+
         for(int i = 0; i < nearbyPlaceList.size(); i++)
         {
             MarkerOptions markerOptions = new MarkerOptions();
@@ -64,6 +67,8 @@ class GetNearbyPlacesData extends AsyncTask<Object, String, String> {
             mMap.addMarker(markerOptions);
             mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
             mMap.animateCamera(CameraUpdateFactory.zoomTo(10));
+
+            Log.d(TAG, "showNearbyPlaces: is it done is it done is it done is it done");
         }
     }
 }
