@@ -58,9 +58,9 @@ public class MainActivity extends AppCompatActivity  {
         final LocationManager manager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
         try{
-            if (!manager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
-            buildAlertMessageNoGps();
-        }
+            if (manager != null && !manager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+                buildAlertMessageNoGps();
+            }
         }catch(NullPointerException e){
                 Log.e(TAG, "statusCheck: ");
             }
