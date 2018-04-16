@@ -27,6 +27,7 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationListener;
+import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.places.AutocompletePrediction;
 import com.google.android.gms.location.places.GeoDataClient;
@@ -37,6 +38,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MapStyleOptions;
@@ -67,15 +69,15 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private GoogleMap mMap;
     private FusedLocationProviderClient mFusedLocationProviderClient;
     private PlaceAutocompleteAdapter mPlaceAutocompleteAdapter;
-    private GoogleApiClient mGoogleApiClient;
+    private GoogleApiClient client;
     private GeoDataClient mGeoDataClient;
     private PlaceInfo mPlace;
     private Marker mMarker;
     ////////////////////////////////////
     private double latitude,longitude;
-//    private Location lastlocation;
-//    private Marker currentLocationmMarker;
-
+    private Location lastlocation;
+    private Marker currentLocationmMarker;
+    private LocationRequest locationRequest;
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
@@ -233,7 +235,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         //clear all of the markers off of the map
         mMap.clear();
-
         mMap.setInfoWindowAdapter(new CustomInfoWindowAdapter(MapsActivity.this));
 
         if(placeInfo != null) {
@@ -256,7 +257,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             //this will add a marker without any additional info on it
             mMap.addMarker(new MarkerOptions().position(latLng));
         }
-
         hideSoftKeyboard();
     }
 
@@ -279,7 +279,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         Log.d(TAG, "initMap: initializing map");
        // Toast.makeText(this, "3", Toast.LENGTH_SHORT).show();
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
-
         mapFragment.getMapAsync(MapsActivity.this);
     }
 
@@ -344,7 +343,19 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     @Override
     public void onConnected(@Nullable Bundle bundle) {
+
         Log.d(TAG, "onConnected: called");
+
+        locationRequest = new LocationRequest();
+        locationRequest.setInterval(100);
+        locationRequest.setFastestInterval(1000);
+        locationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
+
+        if(ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION ) == PackageManager.PERMISSION_GRANTED)
+        {
+            LocationServices.FusedLocationApi.requestLocationUpdates(client, locationRequest, this);
+           // LocationServices.getFusedLocationProviderClient(MapsActivity.this, );
+        }
     }
 
     @Override
@@ -403,9 +414,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     };
 
 
-
-
-
     //-------THIS PART IS MEANT ONLY FOR DISPLAYING MARKERS FOR NEARBY PLACES FOUND IN THE GetNearbyPlaceData CLASS-------
 
     public void showNearby()
@@ -448,39 +456,38 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         return googlePlaceUrl.toString();
     }
 
-    @Override
-    public void onLocationChanged(Location location) {
+    protected synchronized void bulidGoogleApiClient() {
+        client = new GoogleApiClient.Builder(this).addConnectionCallbacks(this).addOnConnectionFailedListener(this).addApi(LocationServices.API).build();
+        client.connect();
 
     }
 
-//    @Override
-//    public void onLocationChanged(Location location) {
-//
-//        latitude = location.getLatitude();
-//        longitude = location.getLongitude();
-//        lastlocation = location;
-//        if(currentLocationmMarker != null)
-//        {
-//            currentLocationmMarker.remove();
-//
-//        }
-//        Log.d("lat = ",""+latitude);
-//        LatLng latLng = new LatLng(location.getLatitude() , location.getLongitude());
-//        MarkerOptions markerOptions = new MarkerOptions();
-//        markerOptions.position(latLng);
-//        markerOptions.title("Current Location");
-//        markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE));
-//        currentLocationmMarker = mMap.addMarker(markerOptions);
-//        mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
-//        mMap.animateCamera(CameraUpdateFactory.zoomBy(10));
-//
-//        if(client != null)
-//        {
-//            LocationServices.FusedLocationApi.removeLocationUpdates(client,this);
-//        }
-//    }
+    @Override
+    public void onLocationChanged(Location location) {
 
+        latitude = location.getLatitude();
+        longitude = location.getLongitude();
+        lastlocation = location;
+        if(currentLocationmMarker != null)
+        {
+            currentLocationmMarker.remove();
 
+        }
+        Log.d("lat = ",""+latitude);
+        LatLng latLng = new LatLng(location.getLatitude() , location.getLongitude());
+        MarkerOptions markerOptions = new MarkerOptions();
+        markerOptions.position(latLng);
+        markerOptions.title("Current Location");
+        markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE));
+        currentLocationmMarker = mMap.addMarker(markerOptions);
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
+        mMap.animateCamera(CameraUpdateFactory.zoomBy(10));
+
+        if(client != null)
+        {
+            LocationServices.FusedLocationApi.removeLocationUpdates(client,this);
+        }
+    }
 }
 
 
