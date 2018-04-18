@@ -45,6 +45,20 @@ public class CompassActivity extends AppCompatActivity implements SensorEventLis
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+
+        mSensorManager.registerListener(this, mSensorManager.getDefaultSensor(Sensor.TYPE_ORIENTATION),
+                SensorManager.SENSOR_DELAY_GAME);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        mSensorManager.unregisterListener(this); // to stop the listener and save battery
+    }
+
+    @Override
     public void onSensorChanged(SensorEvent sensorEvent) {
         // get the angle around the z-axis rotated
         float degree = Math.round(sensorEvent.values[0]);
@@ -86,8 +100,9 @@ public class CompassActivity extends AppCompatActivity implements SensorEventLis
 
 
     GeomagneticField geoField;
-    private void geofield(){
 
+    private void geofield() {
+        
     }
 
     @Override

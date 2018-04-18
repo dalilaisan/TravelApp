@@ -51,6 +51,8 @@
             android:name=".RouteActivity"
             android:label="@string/title_activity_route"
             android:theme="@style/AppTheme" />
+        <activity android:name=".CompassActivity" />
+        <activity android:name=".PlaceDetailActivity"></activity>
     </application>
 
 </manifest>

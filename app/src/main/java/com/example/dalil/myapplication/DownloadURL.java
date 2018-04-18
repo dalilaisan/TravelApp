@@ -11,9 +11,11 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 public class DownloadURL {
+    private static final String TAG = "DownloadURL";
 
-    public String readUrl(String myUrl) throws IOException
-    {
+    public String readUrl(String myUrl) throws IOException {
+        Log.d(TAG, "readUrl: starting to read url");
+
         String data = "";
         InputStream inputStream = null;
         HttpURLConnection urlConnection = null;

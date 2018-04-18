@@ -59,7 +59,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private static final String FINE_LOCATION = Manifest.permission.ACCESS_FINE_LOCATION;
     private static final String COURSE_LOCATION = Manifest.permission.ACCESS_COARSE_LOCATION;
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1234;
-    private static final float DEFAULT_ZOOM = 15f;
+    private static final float DEFAULT_ZOOM = 20f;
     private static final LatLngBounds LAT_LNG_BOUNDS = new LatLngBounds(new LatLng(-40, -168), new LatLng(71, 136));
     //widgets
     private AutoCompleteTextView mSearchText;
@@ -180,6 +180,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             }
         });
         hideSoftKeyboard();
+        showNearby();
     }
 
     private void geoLocate() {
@@ -211,9 +212,12 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 location.addOnCompleteListener(new OnCompleteListener() {
                     @Override
                     public void onComplete(@NonNull Task task) {
-                        if (task.isSuccessful()) {
+                        if (task.isSuccessful() && task.getResult() != null) {
                             Log.d(TAG, "onComplete: found location");
                             Location currentLocation = (Location) task.getResult();
+
+                            Log.d(TAG, "onComplete: location = " + currentLocation.toString());
+                            Log.d(TAG, "onComplete: latitude " + currentLocation.getLatitude());
 
                             moveCamera(new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude()),
                                     DEFAULT_ZOOM, "My location");
@@ -272,7 +276,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             mMap.addMarker(options);
         }
         hideSoftKeyboard();
-        showNearby();
+        //showNearby();
     }
 
     private void initMap() {
@@ -343,7 +347,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     @Override
     public void onConnected(@Nullable Bundle bundle) {
-
         Log.d(TAG, "onConnected: called");
 
         locationRequest = new LocationRequest();
@@ -354,7 +357,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         if(ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION ) == PackageManager.PERMISSION_GRANTED)
         {
             LocationServices.FusedLocationApi.requestLocationUpdates(client, locationRequest, this);
-           // LocationServices.getFusedLocationProviderClient(MapsActivity.this, );
+            //mFusedLocationProviderClient.requestLocationUpdates();
         }
     }
 
@@ -418,7 +421,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     public void showNearby()
     {
-        Log.d(TAG, "showNearby: GETTING NEARBY PLACES NOW !!!!!!!!!!!!");
+        Log.d(TAG, "showNearby: method initialized");
 
         Object dataTransfer[] = new Object[2];
         GetNearbyPlacesData getNearbyPlacesData = new GetNearbyPlacesData();
@@ -429,12 +432,14 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         //interests.add("restaurant");
 
         for(int i=0; i<interests.size(); i++) {
-            mMap.clear();
+            //mMap.clear();
             String placeType = interests.get(i);
             String url = getUrl(latitude, longitude, placeType);
 
             dataTransfer[0] = mMap;
             dataTransfer[1] = url;
+
+            Log.d(TAG, "showNearby: latitude= " + latitude + " longitude " + longitude);
 
             getNearbyPlacesData.execute(dataTransfer);
             Toast.makeText(MapsActivity.this, "Showing Nearby Places", Toast.LENGTH_SHORT).show();
@@ -471,7 +476,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         if(currentLocationmMarker != null)
         {
             currentLocationmMarker.remove();
-
         }
         Log.d("lat = ",""+latitude);
         LatLng latLng = new LatLng(location.getLatitude() , location.getLongitude());

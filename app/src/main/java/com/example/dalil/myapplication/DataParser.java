@@ -11,9 +11,11 @@ import java.util.HashMap;
 import java.util.List;
 
 public class DataParser {
+    private static final String TAG = "DataParser";
 
     private HashMap<String, String> getPlace(JSONObject googlePlaceJson)
     {
+        Log.d(TAG, "getPlace: ");
         HashMap<String, String> googlePlaceMap = new HashMap<>();
         String placeName = "--NA--";
         String vicinity= "--NA--";
@@ -22,7 +24,6 @@ public class DataParser {
         String reference="";
 
         Log.d("DataParser","jsonobject ="+googlePlaceJson.toString());
-
 
         try {
             if (!googlePlaceJson.isNull("name")) {
@@ -42,16 +43,16 @@ public class DataParser {
             googlePlaceMap.put("lat", latitude);
             googlePlaceMap.put("lng", longitude);
             googlePlaceMap.put("reference", reference);
-
         }
         catch (JSONException e) {
             e.printStackTrace();
         }
         return googlePlaceMap;
-
     }
+
     private List<HashMap<String, String>> getPlaces(JSONArray jsonArray)
     {
+        Log.d(TAG, "getPlaces: getting the places from the json");
         int count = jsonArray.length();
         List<HashMap<String, String>> placelist = new ArrayList<>();
         HashMap<String, String> placeMap = null;
@@ -70,6 +71,7 @@ public class DataParser {
 
     public List<HashMap<String, String>> parse(String jsonData)
     {
+        Log.d(TAG, "parse: started");
         JSONArray jsonArray = null;
         JSONObject jsonObject;
 

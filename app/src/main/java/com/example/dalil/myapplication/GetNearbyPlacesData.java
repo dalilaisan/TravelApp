@@ -22,6 +22,7 @@ class GetNearbyPlacesData extends AsyncTask<Object, String, String> {
 
     @Override
     protected String doInBackground(Object... objects){
+        Log.d(TAG, "doInBackground: initializing");
         mMap = (GoogleMap)objects[0];
         url = (String)objects[1];
 
@@ -37,20 +38,22 @@ class GetNearbyPlacesData extends AsyncTask<Object, String, String> {
 
     @Override
     protected void onPostExecute(String s){
+        Log.d(TAG, "onPostExecute: initializing");
 
         List<HashMap<String, String>> nearbyPlaceList;
         DataParser parser = new DataParser();
         nearbyPlaceList = parser.parse(s);
-        Log.d("nearbyplacesdata","called parse method");
+        Log.d(TAG, "onPostExecute: called parse method");
         showNearbyPlaces(nearbyPlaceList);
     }
 
     private void showNearbyPlaces(List<HashMap<String, String>> nearbyPlaceList) {
 
-        Log.d(TAG, "showNearbyPlaces: THIS IS CALLED NOW!!!!!!!!!!!!!");
+        Log.d(TAG, "showNearbyPlaces: nearbyPlaceList.size= " + nearbyPlaceList.size());
 
         for(int i = 0; i < nearbyPlaceList.size(); i++)
         {
+            Log.d(TAG, "showNearbyPlaces: entering for loop");
             MarkerOptions markerOptions = new MarkerOptions();
             HashMap<String, String> googlePlace = nearbyPlaceList.get(i);
 
@@ -59,10 +62,14 @@ class GetNearbyPlacesData extends AsyncTask<Object, String, String> {
             double lat = Double.parseDouble( googlePlace.get("lat"));
             double lng = Double.parseDouble( googlePlace.get("lng"));
 
+            Log.d(TAG, "showNearbyPlaces: just got lat nad lng");
+
             LatLng latLng = new LatLng( lat, lng);
             markerOptions.position(latLng);
             markerOptions.title(placeName + " : "+ vicinity);
             markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE));
+
+            Log.d(TAG, "showNearbyPlaces: about to move camera and add markers");
 
             mMap.addMarker(markerOptions);
             mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
