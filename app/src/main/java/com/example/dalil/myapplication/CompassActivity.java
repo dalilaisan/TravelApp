@@ -9,33 +9,39 @@ import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.animation.Animation;
 import android.view.animation.RotateAnimation;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 
 //this class is responsible for pointing to a given location (like a compass pointing there instead of to the north)
 
 public class CompassActivity extends AppCompatActivity implements SensorEventListener {
+    private static final String TAG = "CompassActivity";
 
     private ImageView image;
     private float currentDegree = 0f;
-    private SensorManager mSensorManager;
-    private TextView tvHeading;
+    private final SensorManager mSensorManager;
+    private final Sensor mAccelerometer;
+
+    //private TextView tvHeading;
     private Location location = new Location("A");
     private Location target = new Location("B");
     private LocationManager locationManager;
+
+    public CompassActivity() {
+        mSensorManager = (SensorManager)getSystemService(SENSOR_SERVICE);
+        mAccelerometer = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_compass);
 
-        image = (ImageView) findViewById(R.id.imageViewCompass);
-        tvHeading = (TextView) findViewById(R.id.tvHeading);
-
-        mSensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
+        image = findViewById(R.id.imageViewCompass);
+       //tvHeading = (TextView) findViewById(R.id.tvHeading);
 
         location.setLatitude(54.903535);
         location.setLongitude(23.979342);
@@ -47,9 +53,7 @@ public class CompassActivity extends AppCompatActivity implements SensorEventLis
     @Override
     protected void onResume() {
         super.onResume();
-
-        mSensorManager.registerListener(this, mSensorManager.getDefaultSensor(Sensor.TYPE_ORIENTATION),
-                SensorManager.SENSOR_DELAY_GAME);
+        mSensorManager.registerListener(this, mAccelerometer, SensorManager.SENSOR_DELAY_NORMAL);
     }
 
     @Override
@@ -67,8 +71,9 @@ public class CompassActivity extends AppCompatActivity implements SensorEventLis
         float bearing = location.bearingTo(target);
         degree = (bearing - degree) * -1;
         degree = normalizeDegree(degree);
+        Log.d(TAG, "onSensorChanged: degree = " + degree);
 
-        tvHeading.setText("Heading: " + Float.toString(degree) + " degrees");
+        //tvHeading.setText("Heading: " + Float.toString(degree) + " degrees");
         //tvHeading.setText(String.format("Heading: %s degrees", Float.toString(degree)));
 
         // create a rotation animation (reverse turn degree degrees)
@@ -107,6 +112,6 @@ public class CompassActivity extends AppCompatActivity implements SensorEventLis
 
     @Override
     public void onAccuracyChanged(Sensor sensor, int i) {
-
+            //don/t need anything here
     }
 }
