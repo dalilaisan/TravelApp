@@ -24,6 +24,7 @@ public class CompassActivity extends AppCompatActivity implements SensorEventLis
     private float currentDegree = 0f;
     private final SensorManager mSensorManager;
     private final Sensor mAccelerometer;
+    GeomagneticField geoField;
 
     //private TextView tvHeading;
     private Location location = new Location("A");
@@ -48,18 +49,6 @@ public class CompassActivity extends AppCompatActivity implements SensorEventLis
 
         target.setLatitude(54.904618);
         target.setLongitude(23.978782);
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        mSensorManager.registerListener(this, mAccelerometer, SensorManager.SENSOR_DELAY_NORMAL);
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        mSensorManager.unregisterListener(this); // to stop the listener and save battery
     }
 
     @Override
@@ -103,15 +92,20 @@ public class CompassActivity extends AppCompatActivity implements SensorEventLis
         }
     }
 
-
-    GeomagneticField geoField;
-
-    private void geofield() {
-        
+    @Override
+    public void onAccuracyChanged(Sensor sensor, int i) {
+            //don't need anything here
     }
 
     @Override
-    public void onAccuracyChanged(Sensor sensor, int i) {
-            //don/t need anything here
+    protected void onResume() {
+        super.onResume();
+        mSensorManager.registerListener(this, mAccelerometer, SensorManager.SENSOR_DELAY_NORMAL);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        mSensorManager.unregisterListener(this); // to stop the listener and save battery
     }
 }
