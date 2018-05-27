@@ -10,6 +10,8 @@ import eu.kudan.kudan.ARAPIKey;
 import eu.kudan.kudan.ARArbiTrack;
 import eu.kudan.kudan.ARGyroPlaceManager;
 import eu.kudan.kudan.ARImageNode;
+import eu.kudan.kudan.ARModelImporter;
+import eu.kudan.kudan.ARModelNode;
 
 
 public class ARActivity extends eu.kudan.kudan.ARActivity implements GestureDetector.OnGestureListener {
@@ -63,6 +65,10 @@ public class ARActivity extends eu.kudan.kudan.ARActivity implements GestureDete
 
 
         //Setup content with ArbiTrack:
+
+        ARModelImporter importer = new ARModelImporter();
+        importer.loadFromAsset("two.jet");
+        ARModelNode modelNode = importer.getNode();
 
         // Create a node to be tracked.
         ARImageNode trackingNode = new ARImageNode("Cow Tracking.png");
