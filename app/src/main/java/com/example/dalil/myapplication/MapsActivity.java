@@ -1,6 +1,7 @@
 package com.example.dalil.myapplication;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.location.Address;
@@ -233,7 +234,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
     }
 
-    private void moveCamera(LatLng latLng, float zoom, PlaceInfo placeInfo) {
+    private void moveCamera(LatLng latLng, float zoom, final PlaceInfo placeInfo) {
         Log.d(TAG, "moveCamera: moving the camera to: lat: " + latLng.latitude + " lng:" + latLng.longitude);
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, zoom));
 
@@ -253,6 +254,20 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
                 mMarker = mMap.addMarker(options);
 
+                /////////////////
+                //clicking on the marker will lead us to the detail screen for the clicked place
+
+                mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+                    @Override
+                    public boolean onMarkerClick(Marker marker) {
+                        Intent intent = new Intent(MapsActivity.this, PlaceDetailActivity.class);
+                        intent.putExtra("PlaceName", placeInfo.getName());
+                        startActivity(intent);
+                        return true;
+                    }
+                });
+
+                ///////////////
             }catch (NullPointerException e){
                 Log.e(TAG, "moveCamera: NullPointerException: " + e.getMessage() );
             }

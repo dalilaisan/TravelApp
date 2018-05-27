@@ -41,6 +41,13 @@ public class LocationService extends Service {
 
             @Override
             public void onStatusChanged(String s, int i, Bundle bundle) {
+
+//                NotificationCompat.Builder  mBuilder = new NotificationCompat.Builder(this, CHANNEL_ID)
+//                        .setSmallIcon(R.drawable.notification_icon)
+//                        .setContentTitle(textTitle)
+//                        .setContentText(textContent)
+//                        .setPriority(NotificationCompat.PRIORITY_DEFAULT);
+
             }
 
             @Override
@@ -51,7 +58,7 @@ public class LocationService extends Service {
                 public void onProviderDisabled(String s) {
                 Intent i = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
                 i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                startActivity(i);
+                    startActivity(i);
             }
         };
 

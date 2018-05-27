@@ -34,7 +34,6 @@ public class CustomInfoWindowAdapter implements GoogleMap.InfoWindowAdapter {
         if(!snippet.equals("")){
             tvTitle.setText(snippet);
         }
-
     }
 
     @Override

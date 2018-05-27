@@ -13,7 +13,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 
-class GetNearbyPlacesData extends AsyncTask<Object, String, String> {
+class   GetNearbyPlacesData extends AsyncTask<Object, String, String> {
 
     private static final String TAG = "GetNearbyPlacesData";
     private String googlePlacesData;
