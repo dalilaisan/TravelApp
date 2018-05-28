@@ -9,16 +9,16 @@ public class PlaceInfo {
     private String phoneNumber;
     private String id;
     private LatLng latLng;
-    private int price;
+    private int priceLevel;
     private int rating;
 
-    public PlaceInfo(String name, String address, String phoneNumber, String id, int price, int rating) {
+    public PlaceInfo(String name, String address, String phoneNumber, String id, int priceLevel, int rating) {
         this.name = name;
         this.address = address;
         this.phoneNumber = phoneNumber;
         this.id = id;
         this.latLng = latLng;
-        this.price = price;
+        this.priceLevel = priceLevel;
         this.rating = rating;
     }
 
@@ -65,16 +65,16 @@ public class PlaceInfo {
         this.latLng = latLng;
     }
 
-    public int getPrice() {
-        return price;
+    public int getPriceLevel() {
+        return priceLevel;
     }
 
     public int getRating() {
         return rating;
     }
 
-    public void setPrice(int price) {
-        this.price = price;
+    public void setPriceLevel(int priceLevel) {
+        this.priceLevel = priceLevel;
     }
 
     public void setRating(int rating) {
@@ -89,7 +89,7 @@ public class PlaceInfo {
                 ", phoneNumber='" + phoneNumber + '\'' +
                 ", id='" + id + '\'' +
                 ", latLng=" + latLng +
-                ", price= " + price +
+                ", price= " + priceLevel +
                 ", rating= " + rating +
                 '}';
     }

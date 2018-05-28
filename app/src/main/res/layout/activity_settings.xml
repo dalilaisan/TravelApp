@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@layout/main_header_selector"
     tools:context="com.example.dalil.myapplication.SettingsActivity">
 
     <TextView
