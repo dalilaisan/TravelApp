@@ -4,7 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@layout/main_header_selector"
     tools:context=".ManageInterestsActivity">
 
     <ImageView
@@ -27,7 +26,7 @@
         android:baselineAlignBottom="true"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView5"
-        app:srcCompat="@drawable/button" />
+        android:src="@drawable/bank_selector" />
 
     <ImageView
         android:id="@+id/drink"
@@ -39,7 +38,7 @@
         android:baselineAlignBottom="true"
         app:layout_constraintBaseline_toBaselineOf="@+id/bank"
         app:layout_constraintStart_toEndOf="@+id/bank"
-        app:srcCompat="@drawable/bar_256px" />
+        android:src="@drawable/drink_selector" />
 
     <ImageView
         android:id="@+id/caffee"
@@ -49,7 +48,7 @@
         android:baselineAlignBottom="true"
         app:layout_constraintStart_toStartOf="@+id/bank"
         app:layout_constraintTop_toBottomOf="@+id/bank"
-        app:srcCompat="@drawable/cafe_256px" />
+        android:src="@drawable/caffee_selector" />
 
     <ImageView
         android:id="@+id/hotel"
@@ -83,7 +82,7 @@
         android:baselineAlignBottom="true"
         app:layout_constraintBaseline_toBaselineOf="@+id/drink"
         app:layout_constraintStart_toEndOf="@+id/drink"
-        app:srcCompat="@drawable/shopping_256px" />
+        android:src="@drawable/shopping_selector" />
 
     <ImageView
         android:id="@+id/transport"
@@ -96,20 +95,6 @@
         app:layout_constraintStart_toEndOf="@+id/hospital"
         app:srcCompat="@drawable/transport_256px" />
 
-    <Button
-        android:id="@+id/doneButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="24dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginRight="8dp"
-        android:layout_marginStart="8dp"
-        android:text="Done!"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
-
     <TextView
         android:id="@+id/textView4"
         android:layout_width="wrap_content"
@@ -118,7 +103,7 @@
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="24dp"
         android:text="What are you interested in?"
         android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -133,10 +118,30 @@
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="32dp"
         android:text="Select what you like"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView4" />
+
+    <TextView
+        android:id="@+id/textView19"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:text="Done!"
+        android:textColor="@android:color/white"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.501"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/transport"
+        app:layout_constraintVertical_bias="0.366" />
 
 </android.support.constraint.ConstraintLayout>

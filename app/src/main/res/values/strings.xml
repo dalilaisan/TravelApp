@@ -22,6 +22,8 @@
     <string name="Enter_address_city_or_zip_code">Enter Address, City or Zip Code</string>
     <string name="Route">Route</string>
     <string name="google_maps_web_service_API_key">AIzaSyDiC_O2q9rY51r-EXnmX5Gc97KCQwoGMNs</string>
+    <string name="Settings">Settings</string>
+    <string name="action_settings">Settings</string>
 
 
     <!-- getString(String, Object...) does not support HTML tags directly, they need to be encoded first.
@@ -105,4 +107,5 @@ Original string: <b>%1$s</b><br/><i>Place Id: %2$s</i><br/>Address: %3$s<br/>Pho
 
     <string name="pref_title_vibrate">Vibrate</string>
     <string name="title_activity_place_detail">PlaceDetailActivity</string>
+    <string name="title_activity_route2">Map</string>
 </resources>

@@ -1,15 +1,25 @@
 package com.example.dalil.myapplication;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.app.AppCompatDelegate;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 
 public class ManageInterestsActivity extends AppCompatActivity implements View.OnClickListener {
+    private static final String TAG = "ManageInterestsActivity";
 
     ImageView hospital, cafee, bank, drink, hotel, eat, shopping, transport;
     Button doneButtton;
+    SharedPreferences sharedPreferences;
+
+    static {
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_AUTO);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,7 +33,7 @@ public class ManageInterestsActivity extends AppCompatActivity implements View.O
         eat = findViewById(R.id.eat);
         shopping = findViewById(R.id.shopping);
         transport = findViewById(R.id.transport);
-        doneButtton = findViewById(R.id.doneButton);
+//        doneButtton = findViewById(R.id.doneButton);
 
         cafee.setOnClickListener(this);
         hospital.setOnClickListener(this);
@@ -33,7 +43,10 @@ public class ManageInterestsActivity extends AppCompatActivity implements View.O
         eat.setOnClickListener(this);
         shopping.setOnClickListener(this);
         transport.setOnClickListener(this);
-        doneButtton.setOnClickListener(this);
+//        doneButtton.setOnClickListener(this);
+
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+
 
 
     }
@@ -42,48 +55,101 @@ public class ManageInterestsActivity extends AppCompatActivity implements View.O
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.caffee:
-                cafee.setImageResource(R.drawable.cafe_checked_256px);
-                if(cafee.isSelected()) {
+               // cafee.setImageResource(R.drawable.cafe_checked_256px);
+                if(!cafee.isActivated()) {
                  //add to interests
+                     cafee.setActivated(true);
+                    Log.d(TAG, "onClick: adding caffee to interests");
+                    sharedPreferences.edit().putBoolean("caffee", true).apply();
 
                 }
                 else {
+                    cafee.setActivated(false);
                  //delete from interests, if exists
-
+                    Log.d(TAG, "onClick: not adding cafee to interests");
+                    sharedPreferences.edit().putBoolean("caffee", false).apply();
                 }
                 break;
             case R.id.hospital:
-                hospital.setImageResource(R.drawable.hospital_checked_256px);
-                //add to interests
+                if(!hospital.isActivated())  {
+                    //add to interests
+                    hospital.setActivated(true);
+                }
+                else {
+                    hospital.setActivated(false);
+                    //delete from interests, if exists
+                }
                 break;
             case R.id.bank:
-                bank.setImageResource(R.drawable.bank_checked_256px);
-                //add to interests
+                if(!bank.isActivated()) {
+                    //add to interests
+                    bank.setActivated(true);
+
+                }
+                else {
+                    bank.setActivated(false);
+                    //delete from interests, if exists
+                }
                 break;
             case R.id.drink:
-                drink.setImageResource(R.drawable.bar_checked_256px);
-                //add to interests
+                if(!drink.isActivated()) {
+                    //add to interests
+                    drink.setActivated(true);
+
+                }
+                else {
+                    drink.setActivated(false);
+                    //delete from interests, if exists
+                }
                 break;
             case R.id.hotel:
-                hotel.setImageResource(R.drawable.hotel_checked_256px);
-                //add to interests
+                if(!hotel.isActivated()) {
+                    //add to interests
+                    hotel.setActivated(true);
+
+                }
+                else {
+                    hotel.setActivated(false);
+                    //delete from interests, if exists
+                }
                 break;
             case R.id.eat:
-                eat.setImageResource(R.drawable.restaurant_checked_256px);
-                //add to interests
+                if (!eat.isActivated()) {
+                    //add to interests
+                    eat.setActivated(true);
+
+                }
+                else {
+                    eat.setActivated(false);
+                    //delete from interests, if exists
+                }
                 break;
             case R.id.shopping:
-                shopping.setImageResource(R.drawable.shopping_checked_256px);
-                //add to interests
+                if(!shopping.isActivated()) {
+                    //add to interests
+                    shopping.setActivated(true);
+
+                }
+                else {
+                    shopping.setActivated(false);
+                    //delete from interests, if exists
+                }
                 break;
             case R.id.transport:
-                transport.setImageResource(R.drawable.transport_checked_256px);
-                //add to interests
-                break;
-            case R.id.doneButton:
-                break;
+                if(!transport.isActivated())  {
+                    //add to interests
+                    transport.setActivated(true);
 
+                }
+                else {
+                    transport.setActivated(false);
+                    //delete from interests, if exists
 
+                }
+                break;
+//            case R.id.doneButton:
+//                break;
+         }
         }
-        }
+
 }

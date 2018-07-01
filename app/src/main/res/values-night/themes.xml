@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Theme.AppCompat.DayNight"
+        parent="Theme.AppCompat.NoActionBar">
+        <item name="android:windowBackground">@layout/main_header_selector2</item>
+    </style>
+</resources>
